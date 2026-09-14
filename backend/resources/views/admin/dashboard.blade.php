@@ -74,9 +74,7 @@
             <p class="text-sm text-gray-600">
                 Menampilkan {{ $logs->firstItem() ?? 0 }}-{{ $logs->lastItem() ?? 0 }} dari {{ $logs->total() }} log
             </p>
-            @if($logs->hasPages())
-                {{ $logs->onEachSide(1)->links() }}
-            @endif
+            {{ $logs->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection

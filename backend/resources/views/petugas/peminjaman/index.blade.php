@@ -116,9 +116,7 @@
             <p class="text-sm text-gray-600">
                 Menampilkan {{ $peminjaman->firstItem() ?? 0 }}-{{ $peminjaman->lastItem() ?? 0 }} dari {{ $peminjaman->total() }} peminjaman
             </p>
-            @if($peminjaman->hasPages())
-                {{ $peminjaman->onEachSide(1)->links() }}
-            @endif
+            {{ $peminjaman->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection

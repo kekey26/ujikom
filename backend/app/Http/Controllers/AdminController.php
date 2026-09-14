@@ -18,12 +18,20 @@ class AdminController extends Controller
     // Menampilkan dashboard admin dan log aktivitas
     public function index(Request $request)
     {
+        $search = $request->input('search');
+
         $logs = LogAktivitas::with('user')
+            ->when($search, function ($query, $search) {
+                return $query->where('aktivitas', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', "%{$search}%");
+                    });
+            })
             ->latest()
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
-        return view('admin.dashboard', compact('logs'));
+        return view('admin.dashboard', compact('logs', 'search'));
     }
 
     // CRUD Alat: Menampilkan daftar alat

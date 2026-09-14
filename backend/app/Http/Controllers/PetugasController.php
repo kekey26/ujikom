@@ -13,12 +13,20 @@ class PetugasController extends Controller
     // Menampilkan daftar pengajuan peminjaman dari siswa/peminjam
     public function indexPeminjaman(Request $request)
     {
+        $search = $request->input('search');
+
         $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])
+            ->when($search, function ($query, $search) {
+                return $query->where('status', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', "%{$search}%");
+                    });
+            })
             ->latest()
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
-        return view('petugas.peminjaman.index', compact('peminjaman'));
+        return view('petugas.peminjaman.index', compact('peminjaman', 'search'));
     }
 
     public function setujuiPeminjaman($id)
