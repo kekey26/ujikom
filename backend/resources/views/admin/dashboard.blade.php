@@ -70,8 +70,13 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
-            {{ $logs->links() }}
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p class="text-sm text-gray-600">
+                Menampilkan {{ $logs->firstItem() ?? 0 }}-{{ $logs->lastItem() ?? 0 }} dari {{ $logs->total() }} log
+            </p>
+            @if($logs->hasPages())
+                {{ $logs->onEachSide(1)->links() }}
+            @endif
         </div>
     </div>
 @endsection

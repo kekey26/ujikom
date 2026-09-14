@@ -258,6 +258,15 @@
 
         </table>
 
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p class="text-sm text-gray-600">
+                Menampilkan {{ $peminjaman->firstItem() ?? 0 }}-{{ $peminjaman->lastItem() ?? 0 }} dari {{ $peminjaman->total() }} peminjaman
+            </p>
+            @if($peminjaman->hasPages())
+                {{ $peminjaman->onEachSide(1)->links() }}
+            @endif
+        </div>
+
     </div>
 
 </div>

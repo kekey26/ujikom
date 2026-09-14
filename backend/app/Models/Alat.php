@@ -20,6 +20,11 @@ class Alat extends Model
         ];
     }
 
+    public function scopeTersedia($query)
+    {
+        return $query->where('stok', '>', 0);
+    }
+
     public function kategori(): BelongsTo {
         return $this->belongsTo(Kategori::class);
     }

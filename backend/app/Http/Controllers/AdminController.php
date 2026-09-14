@@ -16,9 +16,13 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     // Menampilkan dashboard admin dan log aktivitas
-    public function index()
+    public function index(Request $request)
     {
-        $logs = LogAktivitas::with('user')->latest()->take(10)->get();
+        $logs = LogAktivitas::with('user')
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.dashboard', compact('logs'));
     }
 
@@ -297,7 +301,7 @@ class AdminController extends Controller
     {
         $search = $request->input('search');
 
-        $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])
+        $peminjamans = Peminjaman::with(['user', 'detailPinjam.alat'])
             ->when($search, function ($query, $search) {
                 return $query->where('status', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($q) use ($search) {
@@ -308,7 +312,7 @@ class AdminController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.peminjaman.index', compact('peminjaman', 'search'));
+        return view('admin.peminjaman.index', compact('peminjamans', 'search'));
     }
 
     // 2. Menampilkan form tambah peminjaman ($user dan $alat)
@@ -422,12 +426,13 @@ class AdminController extends Controller
     }
 
     // 6. Menampilkan daftar pengembalian
-    public function indexPengembalian()
+    public function indexPengembalian(Request $request)
     {
         $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])
             ->whereIn('status', ['dipinjam', 'telat'])
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         foreach ($peminjaman as $pinjam) {
             if (

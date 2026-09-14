@@ -54,7 +54,7 @@
                             <td class="py-3 px-4 border-b">{{ $item->tgl_kembali_plan }}</td>
                             <td class="py-3 px-4 border-b">
                                 <ul class="list-disc list-inside space-y-1 text-xs">
-                                    @foreach($item->detailPinjams as $detail)
+                                    @foreach($item->detailPinjam as $detail)
                                         <li>
                                             <span class="font-semibold">{{ $detail->alat->nama_alat ?? 'Alat Dihapus' }}</span>
                                             (Jumlah: {{ $detail->jumlah }})
@@ -97,6 +97,15 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p class="text-sm text-gray-600">
+                Menampilkan {{ $peminjamans->firstItem() ?? 0 }}-{{ $peminjamans->lastItem() ?? 0 }} dari {{ $peminjamans->total() }} peminjaman
+            </p>
+            @if($peminjamans->hasPages())
+                {{ $peminjamans->onEachSide(1)->links() }}
+            @endif
         </div>
     </div>
 @endsection

@@ -14,7 +14,7 @@ class PeminjamController extends Controller
 {
     $search = $request->input('search');
 
-    $peminjamans = Peminjaman::with(['user', 'detailPinjams.alat'])
+    $peminjamans = Peminjaman::with(['user', 'detailPinjam.alat'])
         ->where('status', 'diajukan')
         ->when($search, function ($query, $search) {
             return $query->whereHas('user', function ($q) use ($search) {
@@ -22,7 +22,8 @@ class PeminjamController extends Controller
             });
         })
         ->latest()
-        ->get();
+        ->paginate(10)
+        ->withQueryString();
 
     return view('petugas.peminjaman.index', compact('peminjamans', 'search'));
 }
@@ -71,7 +72,7 @@ class PeminjamController extends Controller
     // Melihat riwayat peminjaman user yang sedang login
     public function riwayatPeminjaman()
     {
-        $peminjamans = Peminjaman::with('detailPinjams.alat')
+        $peminjamans = Peminjaman::with('detailPinjam.alat')
             ->where('user_id', auth()->id())
             ->latest()
             ->get();

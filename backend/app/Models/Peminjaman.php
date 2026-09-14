@@ -11,6 +11,13 @@ class Peminjaman extends Model
 
     protected $table = 'peminjaman'; // Sesuaikan nama tabel jika berbeda
 
+    protected $fillable = [
+        'user_id',
+        'tgl_pinjam',
+        'tgl_kembali_plan',
+        'status',
+    ];
+
     // Relasi ke Model User
     public function user()
     {

@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\DB;
 class PetugasController extends Controller
 {
     // Menampilkan daftar pengajuan peminjaman dari siswa/peminjam
-    public function indexPeminjaman()
+    public function indexPeminjaman(Request $request)
     {
-        $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])->latest()->get();
+        $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('petugas.peminjaman.index', compact('peminjaman'));
     }
 
@@ -38,13 +42,14 @@ class PetugasController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-    public function indexPengembalian()
+    public function indexPengembalian(Request $request)
     {
         // Mengambil data yang statusnya 'dipinjam' atau 'selesai'
         $pengembalian = Peminjaman::with(['user', 'detailPinjam.alat'])
             ->whereIn('status', ['dipinjam', 'selesai'])
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         // Jika belum buat file view khusus pengembalian, return view yang ada dulu agar tidak error:
         return view('petugas.peminjaman.index', [
@@ -60,7 +65,7 @@ class PetugasController extends Controller
 
         DB::beginTransaction();
         try {
-            $peminjaman = Peminjaman::with('detailPinjams')->findOrFail($peminjamanId);
+            $peminjaman = Peminjaman::with('detailPinjam')->findOrFail($peminjamanId);
 
             // Simpan data pengembalian
             Pengembalian::create([
@@ -104,11 +109,12 @@ class PetugasController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-    public function indexLaporan()
+    public function indexLaporan(Request $request)
     {
         $laporan = Peminjaman::with(['user', 'detailPinjam.alat'])
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         // Arahkan ke view laporan yang baru dibuat
         return view('petugas.laporan.index', [
