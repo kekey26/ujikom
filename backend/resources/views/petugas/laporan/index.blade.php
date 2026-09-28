@@ -1,122 +1,64 @@
 @extends('layouts.app')
 
-@section('title', 'Persetujuan Peminjaman - Dashboard Petugas')
-@section('header-title', 'Daftar Pengajuan Peminjaman Alat')
+@section('title', 'Cetak Laporan - Dashboard Petugas')
+@section('header-title', 'Laporan Peminjaman Alat')
 
 @section('content')
-    @if(session('success'))
-        <div class="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-lg shadow-sm text-sm">
-            {{ session('success') }}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold text-slate-800">Rekap Data Peminjaman</h3>
+                <p class="text-slate-500 text-sm">Cetak atau ekspor data riwayat peminjaman laboratorium.</p>
+            </div>
+            <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-print"></i>
+                Cetak Laporan
+            </button>
         </div>
-    @endif
+    </div>
 
-    @if(session('error'))
-        <div class="mb-4 bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg shadow-sm text-sm">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-        <!-- Header & Form Search -->
-        <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h3 class="text-lg font-bold text-gray-800">Menunggu Verifikasi Persetujuan</h3>
-            <form action="{{ route('petugas.peminjaman.index') }}" method="GET" class="flex w-full md:w-80">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peminjam..."
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 text-sm font-semibold rounded-r-lg transition">
-                    Cari
-                </button>
-                @if(request('search'))
-                    <a href="{{ route('petugas.peminjaman.index') }}"
-                        class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-2 text-sm rounded-lg flex items-center transition">
-                        Reset
-                    </a>
-                @endif
-            </form>
-        </div>
-
-        <!-- Tabel Data Peminjaman -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-600">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-100 border-b">
-                    <tr>
-                        <th class="px-6 py-3">Peminjam</th>
-                        <th class="px-6 py-3">Tgl Pinjam</th>
-                        <th class="px-6 py-3">Rencana Kembali</th>
-                        <th class="px-6 py-3">Status</th>
-                        <th class="px-6 py-3">Alat yang Dipinjam</th>
-                        <th class="px-6 py-3 text-center">Aksi</th>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+                        <th class="py-3.5 px-4 font-semibold">No</th>
+                        <th class="py-3.5 px-4 font-semibold">Peminjam</th>
+                        <th class="py-3.5 px-4 font-semibold">Tgl Pinjam</th>
+                        <th class="py-3.5 px-4 font-semibold">Rencana Kembali</th>
+                        <th class="py-3.5 px-4 font-semibold">Alat</th>
+                        <th class="py-3.5 px-4 font-semibold">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @forelse($peminjaman as $item)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 font-medium text-gray-900">{{ $item->user->name ?? '-' }}</td>
-                            <td class="px-6 py-4">{{ $item->tgl_pinjam }}</td>
-                            <td class="px-6 py-4">{{ $item->tgl_kembali_plan }}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2.5 py-1 text-xs font-semibold rounded-full 
-                                    @if($item->status == 'diajukan') bg-amber-100 text-amber-800
-                                    @elseif($item->status == 'dipinjam') bg-blue-100 text-blue-800
-                                    @elseif($item->status == 'selesai') bg-emerald-100 text-emerald-800
-                                    @else bg-red-100 text-red-800 @endif">
-                                    {{ ucfirst($item->status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <ul class="list-disc list-inside">
+                <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+                    @forelse($peminjaman as $index => $item)
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="py-3.5 px-4 font-medium text-slate-500">{{ $index + 1 }}</td>
+                            <td class="py-3.5 px-4 font-medium text-slate-900">{{ $item->user->name ?? '-' }}</td>
+                            <td class="py-3.5 px-4 text-slate-600">{{ $item->tgl_pinjam }}</td>
+                            <td class="py-3.5 px-4 text-slate-600">{{ $item->tgl_kembali_plan }}</td>
+                            <td class="py-3.5 px-4">
+                                <ul class="list-disc list-inside text-xs text-slate-600">
                                     @foreach($item->detailPinjam as $detail)
                                         <li>{{ $detail->alat->nama_alat ?? 'Alat' }} ({{ $detail->jumlah }} pcs)</li>
                                     @endforeach
                                 </ul>
                             </td>
-                            <td class="px-6 py-4 text-center">
-                                @if($item->status == 'diajukan')
-                                    <div class="flex justify-center gap-2">
-                                        <form action="{{ route('petugas.peminjaman.setujui', $item->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" onclick="return confirm('Setujui peminjaman ini?')"
-                                                class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded transition">
-                                                Setujui
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('petugas.peminjaman.tolak', $item->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" onclick="return confirm('Tolak peminjaman ini?')"
-                                                class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded transition">
-                                                Tolak
-                                            </button>
-                                        </form>
-                                    </div>
-                                @elseif($item->status == 'dipinjam')
-                                    <form action="{{ route('petugas.pengembalian.proses', $item->id) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="kondisi_kembali" value="Baik">
-                                        <input type="hidden" name="denda" value="0">
-                                        <button type="submit" onclick="return confirm('Proses pengembalian alat ini?')"
-                                            class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded transition">
-                                            Terima Kembali
-                                        </button>
-                                    </form>
-                                @else
-                                    <span class="text-gray-400 text-xs">Selesai</span>
-                                @endif
+                            <td class="py-3.5 px-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                                    {{ ucfirst($item->status) }}
+                                </span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data peminjaman.</td>
+                            <td colspan="6" class="py-8 text-center text-slate-400 text-sm">
+                                Belum ada data untuk laporan.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
-        </div>
-
-        <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <p class="text-sm text-gray-600">
-                Menampilkan {{ $peminjaman->firstItem() ?? 0 }}-{{ $peminjaman->lastItem() ?? 0 }} dari {{ $peminjaman->total() }} peminjaman
-            </p>
-            {{ $peminjaman->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection

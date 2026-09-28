@@ -11,6 +11,12 @@ class DetailPinjam extends Model
 
     protected $table = 'detail_pinjam'; // Sesuaikan nama tabel
 
+    protected $fillable = [
+        'peminjaman_id',
+        'alat_id',
+        'jumlah',
+    ];
+
     public function alat()
     {
         return $this->belongsTo(Alat::class, 'alat_id');

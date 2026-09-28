@@ -82,8 +82,11 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
-            {{ $kategori->links() }}
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p class="text-sm text-gray-600">
+                Menampilkan {{ $kategori->firstItem() ?? 0 }}-{{ $kategori->lastItem() ?? 0 }} dari {{ $kategori->total() }} kategori
+            </p>
+            {{ $kategori->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection

@@ -52,7 +52,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // ====================
     // KELOLA PENGEMBALIAN
     // ====================
-    Route::get('/pengembalian', [AdminController::class, 'indexPengembalian'])
+Route::get('/pengembalian', [AdminController::class, 'indexPengembalian'])
         ->name('pengembalian.index');
     Route::get('/pengembalian/{id}/create', [AdminController::class, 'createPengembalian'])
         ->name('pengembalian.create');

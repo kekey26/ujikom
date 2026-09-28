@@ -96,8 +96,11 @@
             </table>
         </div>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
-            {{ $alat->links() }}
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p class="text-sm text-gray-600">
+                Menampilkan {{ $alat->firstItem() ?? 0 }}-{{ $alat->lastItem() ?? 0 }} dari {{ $alat->total() }} alat
+            </p>
+            {{ $alat->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection

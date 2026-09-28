@@ -11,8 +11,8 @@ class PeminjamanResource extends JsonResource
         return [
             'id' => $this->id,
             'peminjam' => $this->whenLoaded('user', fn() => $this->user?->name),
-            'tgl_pinjam' => $this->tgl_pinjam?->format('Y-m-d'),
-            'tgl_kembali_plan' => $this->tgl_kembali_plan?->format('Y-m-d'),
+            'tgl_pinjam' => $this->tgl_pinjam instanceof \Carbon\Carbon ? $this->tgl_pinjam->format('Y-m-d') : $this->tgl_pinjam,
+            'tgl_kembali_plan' => $this->tgl_kembali_plan instanceof \Carbon\Carbon ? $this->tgl_kembali_plan->format('Y-m-d') : $this->tgl_kembali_plan,
             'status' => $this->status,
             'item_dipinjam' => $this->whenLoaded('detailPinjam', function () {
                 return $this->detailPinjam->map(function ($detail) {
@@ -22,11 +22,10 @@ class PeminjamanResource extends JsonResource
                     ];
                 });
             }),
-            'info_pengembalian' => $this->whenLoaded('pengembalian',
-function () {
+            'info_pengembalian' => $this->whenLoaded('pengembalian', function () {
                 if (!$this->pengembalian) return null;
                 return [
-                    'tgl_kembali' => $this->pengembalian->tgl_kembali?->format('Y-m-d'),
+                    'tgl_kembali' => $this->pengembalian->tgl_kembali instanceof \Carbon\Carbon ? $this->pengembalian->tgl_kembali->format('Y-m-d') : $this->pengembalian->tgl_kembali,
                     'kondisi' => $this->pengembalian->kondisi_kembali,
                     'denda' => (int) $this->pengembalian->denda,
                     'petugas_penerima' => $this->pengembalian->petugas?->name ?? 'Sistem',

@@ -14,6 +14,14 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="mb-4 bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-sm">
+            @foreach($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
     <div class="mb-6">
         <h2 class="text-lg font-bold text-gray-800">
             Konfirmasi Pengembalian
@@ -118,6 +126,9 @@
         $dendaPerHari = 5000;
         $totalDenda = $hariTerlambat * $dendaPerHari;
 
+        $dendaKerusakan = 0;
+        $totalDendaAkhir = $totalDenda + $dendaKerusakan;
+
     @endphp
 
     <div class="mb-6">
@@ -158,19 +169,18 @@
 
             </div>
 
-            <div class="flex justify-between text-sm">
-
-                <span class="text-gray-600">
-                    Denda
-                </span>
-
-                <span class="font-bold text-lg
-                    {{ $totalDenda > 0 ? 'text-red-600' : 'text-emerald-600' }}">
-
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-600">Denda Keterlambatan</span>
+                <span class="font-semibold text-gray-800">
                     Rp {{ number_format($totalDenda, 0, ',', '.') }}
-
                 </span>
+            </div>
 
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Denda Kerusakan</span>
+                <span class="font-semibold text-gray-800">
+                    Diisi manual
+                </span>
             </div>
 
             @if($hariTerlambat > 0)
@@ -193,15 +203,6 @@
     </div>
 
     {{-- Tombol --}}
-    <div class="flex justify-end space-x-2">
-
-        <a href="{{ route('admin.pengembalian.index') }}"
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold transition">
-
-            Batal
-
-        </a>
-
         <form
             action="{{ route('admin.pengembalian.kembalikan', $peminjaman->id) }}"
             method="POST"
@@ -210,18 +211,80 @@
             @csrf
             @method('PUT')
 
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2">
+                    Kondisi Saat Dikembalikan
+                </label>
+
+                <select name="kondisi_kembali" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+
+                    <option value="">-- Pilih Kondisi --</option>
+                    <option value="Baik">Baik</option>
+                    <option value="Rusak Ringan">Rusak Ringan</option>
+                    <option value="Rusak Berat">Rusak Berat</option>
+                    <option value="Tidak Lengkap">Tidak Lengkap</option>
+
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-semibold mb-2">
+                    Denda Kerusakan
+                </label>
+
+                <input
+                    type="number"
+                    name="denda_kerusakan"
+                    id="denda_kerusakan"
+                    min="0"
+                    value="0"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    placeholder="Masukkan denda kerusakan"
+                    oninput="hitungTotalDenda(this.value)">
+
+                <p class="text-xs text-gray-500 mt-1">
+                    Isi 0 jika tidak ada kerusakan.
+                </p>
+            </div>
+
+            <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700 font-semibold">
+                        Total Denda
+                    </span>
+
+                    <span id="total_denda" class="text-lg font-bold text-blue-600">
+                        Rp {{ number_format($totalDenda, 0, ',', '.') }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+
+                <a href="{{ route('admin.pengembalian.index') }}"
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold transition">
+                    Batal
+                </a>
+
             <button
                 type="submit"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-
                 Konfirmasi Pengembalian
-
             </button>
-
-        </form>
-
-    </div>
-
+        </div>
+</form>
 </div>
+
+<script>
+    function hitungTotalDenda(nilaiKerusakan) {
+        const dendaKeterlambatan = {{ $totalDenda }};
+        const dendaKerusakan = parseInt(nilaiKerusakan) || 0;
+
+        const total = dendaKeterlambatan + dendaKerusakan;
+
+        document.getElementById('total_denda').textContent =
+            'Rp ' + total.toLocaleString('id-ID');
+    }
+</script>
 
 @endsection

@@ -98,10 +98,11 @@
     </div>
 
     <!-- Pagination -->
-    @if(method_exists($users, 'links'))
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
-            {{ $users->links() }}
-        </div>
-    @endif
+    <div class="p-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p class="text-sm text-gray-600">
+            Menampilkan {{ $users->firstItem() ?? 0 }}-{{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} pengguna
+        </p>
+        {{ $users->onEachSide(1)->links() }}
+    </div>
 </div>
 @endsection
