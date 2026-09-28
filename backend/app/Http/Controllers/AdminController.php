@@ -439,19 +439,14 @@ class AdminController extends Controller
     // 6. Menampilkan daftar pengembalian
     public function indexPengembalian()
     {
+        Peminjaman::where('status', 'dipinjam')
+            ->whereDate('tgl_kembali_plan', '<', Carbon::today())
+            ->update(['status' => 'telat']);
+
         $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])
             ->whereIn('status', ['dipinjam', 'telat'])
             ->latest()
-            ->get();
-
-        foreach ($peminjaman as $pinjam) {
-            if (
-                $pinjam->status === 'dipinjam' &&
-                Carbon::today()->gt(Carbon::parse($pinjam->tgl_kembali_plan))
-            ) {
-                $pinjam->update(['status' => 'telat']);
-            }
-        }
+            ->paginate(5);
 
         return view('admin.pengembalian.index', compact('peminjaman'));
     }

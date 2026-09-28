@@ -118,8 +118,11 @@
             </table>
         </div>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
-            {{ $peminjaman->links() }}
+        <div class="flex flex-col gap-3 border-t border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm text-gray-600">
+                Menampilkan {{ $peminjaman->firstItem() ?? 0 }}-{{ $peminjaman->lastItem() ?? 0 }} dari {{ $peminjaman->total() }} peminjaman
+            </p>
+            {{ $peminjaman->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection
