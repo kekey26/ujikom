@@ -78,6 +78,10 @@
                 width: 100% !important;
             }
 
+            .print-report .overflow-x-auto {
+                overflow: visible !important;
+            }
+
             .print-report tr {
                 break-inside: avoid;
             }
@@ -89,12 +93,35 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-lg font-bold text-slate-800">Rekap Data Peminjaman</h3>
-                    <p class="text-slate-500 text-sm">Cetak atau ekspor data riwayat peminjaman laboratorium.</p>
+                    <p class="text-slate-500 text-sm">
+                        Cetak data riwayat peminjaman laboratorium
+                        @if($statusFilter)
+                            dengan status {{ $statusFilter === 'dipinjam' ? 'Sedang Dipinjam' : ucfirst($statusFilter) }}.
+                        @else
+                            sesuai status.
+                        @endif
+                    </p>
                 </div>
-                <button onclick="window.print()" class="no-print bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2">
-                    <i class="fa-solid fa-print"></i>
-                    Cetak Laporan
-                </button>
+                <div class="no-print flex flex-col sm:flex-row sm:items-center gap-2">
+                    <form action="{{ route('petugas.laporan.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                        <label for="status" class="text-sm font-medium text-slate-600">Status</label>
+                        <select id="status" name="status" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="" @selected($statusFilter === '')>Semua Status</option>
+                            <option value="diajukan" @selected($statusFilter === 'diajukan')>Diajukan</option>
+                            <option value="dipinjam" @selected($statusFilter === 'dipinjam')>Sedang Dipinjam</option>
+                            <option value="telat" @selected($statusFilter === 'telat')>Terlambat</option>
+                            <option value="dikembalikan" @selected($statusFilter === 'dikembalikan')>Dikembalikan</option>
+                            <option value="selesai" @selected($statusFilter === 'selesai')>Selesai</option>
+                        </select>
+                        <button type="submit" class="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">
+                            Terapkan
+                        </button>
+                    </form>
+                    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        Cetak Laporan
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -107,17 +134,19 @@
                             <th class="py-3.5 px-4 font-semibold">Peminjam</th>
                             <th class="py-3.5 px-4 font-semibold">Tgl Pinjam</th>
                             <th class="py-3.5 px-4 font-semibold">Rencana Kembali</th>
+                            <th class="py-3.5 px-4 font-semibold">Tanggal Dikembalikan</th>
                             <th class="py-3.5 px-4 font-semibold">Alat</th>
                             <th class="py-3.5 px-4 font-semibold">Status</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
-                        @forelse($peminjaman as $index => $item)
+                        @forelse($peminjaman as $item)
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="py-3.5 px-4 font-medium text-slate-500">{{ $index + 1 }}</td>
+                                <td class="py-3.5 px-4 font-medium text-slate-500">{{ $peminjaman->firstItem() + $loop->index }}</td>
                                 <td class="py-3.5 px-4 font-medium text-slate-900">{{ $item->user->name ?? '-' }}</td>
                                 <td class="py-3.5 px-4 text-slate-600">{{ $item->tgl_pinjam }}</td>
                                 <td class="py-3.5 px-4 text-slate-600">{{ $item->tgl_kembali_plan }}</td>
+                                <td class="py-3.5 px-4 text-slate-600">{{ $item->pengembalian?->tgl_kembali ?? '-' }}</td>
                                 <td class="py-3.5 px-4">
                                     <ul class="list-disc list-inside text-xs text-slate-600">
                                         @foreach($item->detailPinjam as $detail)
@@ -133,7 +162,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-8 text-center text-slate-400 text-sm">
+                                <td colspan="7" class="py-8 text-center text-slate-400 text-sm">
                                     Belum ada data untuk laporan.
                                 </td>
                             </tr>

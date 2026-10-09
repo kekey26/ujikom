@@ -122,14 +122,21 @@ class PetugasController extends Controller
     }
     public function indexLaporan(Request $request)
     {
-        $laporan = Peminjaman::with(['user', 'detailPinjam.alat'])
+        $filters = $request->validate([
+            'status' => ['nullable', 'in:diajukan,dipinjam,telat,dikembalikan,selesai'],
+        ]);
+
+        $laporan = Peminjaman::with(['user', 'detailPinjam.alat', 'pengembalian'])
+            ->when($filters['status'] ?? null, function ($query, $status) {
+                $query->where('status', $status);
+            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        // Arahkan ke view laporan yang baru dibuat
         return view('petugas.laporan.index', [
-            'peminjaman' => $laporan
+            'peminjaman' => $laporan,
+            'statusFilter' => $filters['status'] ?? '',
         ]);
     }
 }
