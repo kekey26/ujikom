@@ -19,6 +19,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/kategori', [AdminController::class, 'indexKategori'])->name('kategori.index');
     Route::get('/kategori/create', [AdminController::class, 'createKategori'])->name('kategori.create');
     Route::post('/kategori', [AdminController::class, 'storeKategori'])->name('kategori.store');
+    Route::get('/kategori/{id}', [AdminController::class, 'editKategori'])->name('kategori.show');
     Route::get('/kategori/{id}/edit', [AdminController::class, 'editKategori'])->name('kategori.edit');
     Route::put('/kategori/{id}', [AdminController::class, 'updateKategori'])->name('kategori.update');
     Route::delete('/kategori/{id}', [AdminController::class, 'destroyKategori'])->name('kategori.destroy');
@@ -84,9 +85,14 @@ Route::middleware(['auth', 'role:petugas,admin'])->prefix('petugas')->name('petu
 
 //peminjam
 Route::middleware(['auth', 'role:peminjam'])->prefix('peminjam')->name('peminjam.')->group(function () {
-    // Katalog & Pengajuan
+    Route::get('/dashboard', [PeminjamController::class, 'dashboard'])->name('dashboard');
+    Route::get('/alat', [PeminjamController::class, 'katalogAlat'])->name('alat.index');
     Route::get('/katalog', [PeminjamController::class, 'katalogAlat'])->name('katalog');
+    Route::get('/alat/{alat}', [PeminjamController::class, 'detailAlat'])->name('alat.detail');
+    Route::get('/peminjaman', [PeminjamController::class, 'formPeminjaman'])->name('peminjaman.form');
     Route::post('/peminjaman/ajukan', [PeminjamController::class, 'ajukanPeminjaman'])->name('peminjaman.ajukan');
+    Route::get('/pengembalian', [PeminjamController::class, 'halamanPengembalian'])->name('pengembalian');
+    Route::post('/pengembalian/{id}/ajukan', [PeminjamController::class, 'ajukanPengembalian'])->name('pengembalian.ajukan');
     Route::get('/riwayat', [PeminjamController::class, 'riwayatPeminjaman'])->name('riwayat');
 });
 

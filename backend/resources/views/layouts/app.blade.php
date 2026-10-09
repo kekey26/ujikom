@@ -120,6 +120,40 @@
                             <span>Cetak Laporan</span>
                         </a>
 
+                    @elseif(auth()->check() && auth()->user()->role === 'peminjam')
+
+                        <a href="{{ route('peminjam.dashboard') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:translate-x-1 {{ request()->routeIs('peminjam.dashboard') ? 'bg-slate-800/60 text-white border border-slate-700/50 shadow-sm' : 'text-slate-400 hover:bg-slate-800/40 hover:text-white' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0v-4a1 1 0 011-1h2a1 1 0 011 1v4m-6 0h6"></path>
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <a href="{{ route('peminjam.alat.index') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:translate-x-1 {{ request()->routeIs('peminjam.alat.index', 'peminjam.katalog', 'peminjam.alat.detail') ? 'bg-slate-800/60 text-white border border-slate-700/50 shadow-sm' : 'text-slate-400 hover:bg-slate-800/40 hover:text-white' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                            <span>Melihat Daftar Alat</span>
+                        </a>
+
+                        <a href="{{ route('peminjam.peminjaman.form') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:translate-x-1 {{ request()->routeIs('peminjam.peminjaman.form') ? 'bg-slate-800/60 text-white border border-slate-700/50 shadow-sm' : 'text-slate-400 hover:bg-slate-800/40 hover:text-white' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2v-9a2 2 0 012-2zm4 0V6a2 2 0 012-2h4a2 2 0 012 2v2m-4 4v5m-2.5-2.5h5"></path>
+                            </svg>
+                            <span>Mengajukan Peminjaman</span>
+                        </a>
+
+                        <a href="{{ route('peminjam.pengembalian') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:translate-x-1 {{ request()->routeIs('peminjam.pengembalian') ? 'bg-slate-800/60 text-white border border-slate-700/50 shadow-sm' : 'text-slate-400 hover:bg-slate-800/40 hover:text-white' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 0113.66-5.66L20 9m0-5v5h-5m5 3a8 8 0 01-13.66 5.66L4 15m0 5v-5h5"></path>
+                            </svg>
+                            <span>Mengembalikan Alat</span>
+                        </a>
+
                     @endif
 
                 </nav>

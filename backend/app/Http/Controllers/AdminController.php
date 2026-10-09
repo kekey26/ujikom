@@ -298,7 +298,7 @@ class AdminController extends Controller
     {
         $kategori = Kategori::findOrFail($id);
 
-        if ($kategori->alat()->count() > 0) {
+        if ($kategori->alats()->count() > 0) {
             return redirect()->route('admin.kategori.index')
                 ->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh data alat.');
         }
@@ -496,6 +496,7 @@ class AdminController extends Controller
 
             $peminjaman->update([
                 'status' => 'dikembalikan',
+                'pengembalian_diajukan_at' => null,
             ]);
 
             DB::commit();

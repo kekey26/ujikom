@@ -62,6 +62,11 @@
                                     @else bg-red-100 text-red-800 @endif">
                                     {{ ucfirst($item->status) }}
                                 </span>
+                                @if($item->pengembalian_diajukan_at)
+                                    <span class="mt-2 block w-fit rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">
+                                        Pengembalian diajukan
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 <ul class="list-disc list-inside">
@@ -88,14 +93,14 @@
                                             </button>
                                         </form>
                                     </div>
-                                @elseif($item->status == 'dipinjam')
+                                @elseif(in_array($item->status, ['dipinjam', 'telat']))
                                     <form action="{{ route('petugas.pengembalian.proses', $item->id) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="kondisi_kembali" value="Baik">
                                         <input type="hidden" name="denda" value="0">
                                         <button type="submit" onclick="return confirm('Proses pengembalian alat ini?')"
                                             class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded transition">
-                                            Terima Kembali
+                                            {{ $item->pengembalian_diajukan_at ? 'Proses Pengembalian' : 'Terima Kembali' }}
                                         </button>
                                     </form>
                                 @else

@@ -52,9 +52,9 @@ class PetugasController extends Controller
     }
     public function indexPengembalian(Request $request)
     {
-        // Mengambil data yang statusnya 'dipinjam' atau 'selesai'
+        // Mengambil data yang masih dipinjam atau sudah diproses.
         $pengembalian = Peminjaman::with(['user', 'detailPinjam.alat'])
-            ->whereIn('status', ['dipinjam', 'selesai'])
+            ->whereIn('status', ['dipinjam', 'telat', 'selesai', 'dikembalikan'])
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -85,7 +85,10 @@ class PetugasController extends Controller
             ]);
 
             // Update status peminjaman jadi selesai
-            $peminjaman->update(['status' => 'selesai']);
+            $peminjaman->update([
+                'status' => 'selesai',
+                'pengembalian_diajukan_at' => null,
+            ]);
 
             // Kembalikan stok alat ke inventaris
             foreach ($peminjaman->detailPinjam as $detail) {

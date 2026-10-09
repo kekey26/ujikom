@@ -75,7 +75,10 @@ class PengembalianController extends Controller
                 ]);
 
                 // 2. Ubah status di tabel peminjaman utama
-                $peminjaman->update(['status' => $statusPeminjamanBaru]);
+                $peminjaman->update([
+                    'status' => $statusPeminjamanBaru,
+                    'pengembalian_diajukan_at' => null,
+                ]);
 
                 // 3. Kembalikan (tambah) stok alat berdasarkan detail_pinjam
                 foreach ($peminjaman->detailPinjam as $detail) {
