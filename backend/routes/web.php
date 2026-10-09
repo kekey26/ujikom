@@ -92,7 +92,12 @@ Route::middleware(['auth', 'role:peminjam'])->prefix('peminjam')->name('peminjam
     Route::get('/peminjaman', [PeminjamController::class, 'formPeminjaman'])->name('peminjaman.form');
     Route::post('/peminjaman/ajukan', [PeminjamController::class, 'ajukanPeminjaman'])->name('peminjaman.ajukan');
     Route::get('/pengembalian', [PeminjamController::class, 'halamanPengembalian'])->name('pengembalian');
-    Route::post('/pengembalian/{id}/ajukan', [PeminjamController::class, 'ajukanPengembalian'])->name('pengembalian.ajukan');
+    Route::get('/pengembalian/{id}/ajukan', function () {
+        return redirect()->route('peminjam.pengembalian');
+    })->whereNumber('id');
+    Route::post('/pengembalian/{id}/ajukan', [PeminjamController::class, 'ajukanPengembalian'])
+        ->whereNumber('id')
+        ->name('pengembalian.ajukan');
     Route::get('/riwayat', [PeminjamController::class, 'riwayatPeminjaman'])->name('riwayat');
 });
 

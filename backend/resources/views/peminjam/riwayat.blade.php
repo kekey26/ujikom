@@ -7,6 +7,18 @@
 
 <div class="space-y-6">
 
+    @if(session('success'))
+        <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Header --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 
@@ -25,7 +37,7 @@
             <a href="{{ route('peminjam.katalog') }}"
                class="px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition text-center">
 
-                + Ajukan Peminjaman
+                Ajukan Peminjaman
 
             </a>
 
@@ -80,15 +92,16 @@
 
                 <tbody class="divide-y divide-gray-100">
 
+                    @php($nomor = 0)
                     @forelse($peminjaman as $pinjam)
 
-                        @foreach($pinjam->detailPinjam as $detail)
+                        @forelse($pinjam->detailPinjam as $detail)
 
                             <tr class="hover:bg-gray-50">
 
                                 {{-- Nomor --}}
                                 <td class="px-6 py-4 text-gray-600">
-                                    {{ $loop->iteration }}
+                                    {{ ++$nomor }}
                                 </td>
 
 
@@ -117,7 +130,7 @@
                                 <td class="px-6 py-4 text-center text-gray-600">
 
                                     {{ $pinjam->tgl_pinjam
-                                        ? \Carbon\Carbon::parse($pinjam->tgl_pinjam)->locale('id')->translatedFormat('d F Y, H:i')
+                                        ? \Carbon\Carbon::parse($pinjam->tgl_pinjam)->locale('id')->translatedFormat('d F Y')
                                         : '-' }}
 
                                 </td>
@@ -127,14 +140,14 @@
                                 <td class="px-6 py-4 text-center text-gray-600">
 
                                     {{ $pinjam->tgl_kembali_plan
-                                        ? \Carbon\Carbon::parse($pinjam->tgl_kembali_plan)->locale('id')->translatedFormat('d F Y, H:i')
+                                        ? \Carbon\Carbon::parse($pinjam->tgl_kembali_plan)->locale('id')->translatedFormat('d F Y')
                                         : '-' }}
 
                                 </td>
 
                                 <td class="px-6 py-4 text-center text-gray-600">
                                     {{ $pinjam->pengembalian?->tgl_kembali
-                                        ? \Carbon\Carbon::parse($pinjam->pengembalian->tgl_kembali)->locale('id')->translatedFormat('d F Y, H:i')
+                                        ? \Carbon\Carbon::parse($pinjam->pengembalian->tgl_kembali)->locale('id')->translatedFormat('d F Y')
                                         : '-' }}
                                 </td>
 
@@ -146,18 +159,6 @@
 
                                         <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
                                             Diajukan
-                                        </span>
-
-                                    @elseif($pinjam->status === 'disetujui')
-
-                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
-                                            Disetujui
-                                        </span>
-
-                                    @elseif($pinjam->status === 'ditolak')
-
-                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                                            Ditolak
                                         </span>
 
                                     @elseif($pinjam->status === 'selesai')
@@ -178,7 +179,13 @@
 
                             </tr>
 
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                    Tidak ada detail alat pada peminjaman #{{ $pinjam->id }}.
+                                </td>
+                            </tr>
+                        @endforelse
 
                     @empty
 
